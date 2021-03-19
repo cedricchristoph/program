@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author Inf2
  */
 public class Persona {
-    private TableConstructor tc;
+    protected TableConstructor tc;
     protected String nombre;
     protected String apellidos;
     protected String fechaNacimiento;
