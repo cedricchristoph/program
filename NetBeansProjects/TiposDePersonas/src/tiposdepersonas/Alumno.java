@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class Alumno extends Persona {
     
-    private TableConstructor tc;
     private String curso;
     private byte altura;
     private HashMap<String, Integer> notas;
@@ -26,7 +25,6 @@ public class Alumno extends Persona {
         this.curso = curso;
         this.altura = altura;
         notas = new HashMap();
-        tc = new TableConstructor();
     }
 
     
@@ -84,16 +82,17 @@ public class Alumno extends Persona {
     
     public void mostrarTodo(){
         super.mostrarTodo();
-        tc.setLineMarker("-");
-        tc.setLineSeparator("-");
-        tc.printHeader("CURSO", "ALTURA");
-        tc.printRow(getCurso(), getAltura() + "º");
-        System.out.println("NOTAS");
+        tc.printRow("CURSANDO", getAltura() + "º " + getCurso());
+        System.out.println("NOTAS DISPONIBLES:");
         tc.setCustomSizes(16, 6);
         tc.printHeader("ASIGNATURA", "NOTA");
+        int count = 0;
         for (Iterator it=notas.entrySet().iterator(); it.hasNext();){
+            count += 1;
             Map.Entry<String, Integer> datos = (Map.Entry<String, Integer>)it.next();
             tc.printRow(datos.getKey(), "" + datos.getValue());
         }
+        if (count==0)
+            tc.printHeader("No hay notas disponibles");
     }
 }

@@ -15,7 +15,12 @@ public class Profesor extends Persona{
         super(p);
         this.materiaImpartida = materiaImpartida;
         cursos = new HashMap();
-        //tc = new TableConstructor();
+    }
+    
+    public Profesor (Persona p, String materiaImpartida, HashMap<String, Integer> cursos) {
+        super(p);
+        this.materiaImpartida = materiaImpartida;
+        this.cursos = cursos;
     }
     
     // GETTERS
@@ -43,11 +48,20 @@ public class Profesor extends Persona{
     
     public void mostrarTodo(){
         super.mostrarTodo();
-        tc.printHeader("Materia impartida", "Curso y altura");
-        for (Iterator it=cursos.entrySet().iterator(); it.hasNext();){
-            Map.Entry<String, Integer> datos = (Map.Entry<String, Integer>)it.next();
-            tc.printRow(materiaImpartida, datos.getValue() + "º " + datos.getKey());
+        tc.printRow("MATERIA IMPARTIDA", materiaImpartida);
+        int count = 0;
+        if (!(cursos.isEmpty())){
+            for (Iterator it=cursos.entrySet().iterator(); it.hasNext();){
+                Map.Entry<String, Integer> datos = (Map.Entry<String, Integer>)it.next();
+                if (count==0){
+                    tc.printRow("CURSOS", datos.getValue() + "º " + datos.getKey());
+                    count += 1;
+                    continue;
+                }
+                tc.printRow("", datos.getValue() + "º " + datos.getKey());
+            }
         }
+        
     }
     
     public void addCurso(String curso, Integer altura){

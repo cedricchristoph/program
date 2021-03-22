@@ -1,0 +1,7 @@
+<!START alumnos !>
+Cedric,Christoph,12/11/2002,X8741949V,C/Teide,7,Santa Cruz de Tenerife,38410,DAM,1
+Ricardo,Iglesias,3/5/2000,4356234U,C/El Burgado,2,Santa Cruz de Tenerife,38500,DAW,2
+<!FINISH alumnos !>
+<!START profesores !>
+Juan,Carlos,7/8/1990,not available,,,,0,Fisica
+<!FINISH profesores !>

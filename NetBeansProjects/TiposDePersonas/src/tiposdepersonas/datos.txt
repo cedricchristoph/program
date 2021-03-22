@@ -1,0 +1,8 @@
+<!START alumnos !>
+Juan,Carlos,7/3/1999,not available,,,,0,DAW,2
+Cedric,Christoph,12/11/2002,not available,,,,0,DAM,1
+<!FINISH alumnos !>
+<!START profesores !>
+Pedro,Hernandez,1/1/1980,76498767Y,,,,0,Sistemas,DAM%1|BACH%2|
+Oscar,Gonzalez,7/8/1978,not available,,,,0,Matematicas,ESO%4|BACH%1|
+<!FINISH profesores !>

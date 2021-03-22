@@ -133,20 +133,18 @@ public class Persona {
     // PUBLIC METHODS
     
     public void mostrarTodo(){
-        tc.setLineMarker("-");
-        tc.setLineSeparator("-");
-        if (direccion.exists()) {
-            tc.setCustomSizes(20, 20, 18, 16, 18, 36);
-            tc.printHeader("NOMBRE", "APELLIDOS", "FECHA DE NACIMIENTO", "EDAD ACTUAL", "DNI", "DIRECCION");
-            tc.setCustomOrientations("left", "left", "center", "center", "left", "left");
-            tc.printRow(getNombre(), getApellidos(), getFechaNacimiento(), "" + getEdad(), getDni(),
-                        direccion.getCalle() + " " + direccion.getNumero() + ", " + direccion.getProvincia());
-        } else {
-            tc.setCustomSizes(20, 20, 18, 16, 18);
-            tc.printHeader("NOMBRE", "APELLIDOS", "FECHA DE NACIMIENTO", "EDAD ACTUAL", "DNI");
-            tc.setCustomOrientations("left", "left", "center", "center", "left");
-            tc.printRow(getNombre(), getApellidos(), getFechaNacimiento(), "" + getEdad(), getDni());
-        }
+        tc.showLineMarker(false);
+        tc.showLineSeparator(false);
+        tc.showSectionSeparator(false);
+        tc.setCustomSizes(20, 40);
+        tc.setCustomOrientations("left", "left");
+        tc.printHeader("NOMBRE", getNombre());
+        tc.printRow("APELLIDOS", getApellidos());
+        tc.printRow("FECHA NACIMIENTO", getFechaNacimiento());
+        tc.printRow("EDAD ACTUAL", "" + getEdad());
+        tc.printRow("DNI", getDni());
+        if (direccion.exists())
+            tc.printRow("DOMICILIO", direccion.getCalle() + " " + direccion.getNumero() + ", " + direccion.getCodigoPostal() + ", " + direccion.getProvincia());
     }
     
     public Integer getEdad(){
@@ -177,7 +175,6 @@ public class Persona {
     // PRIVATE METHODS
     
     private boolean matches(String input, String pattern){
-        System.out.println("matching...");
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(input);
         if (m.matches()) {
