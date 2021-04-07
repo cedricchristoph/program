@@ -1,0 +1,2 @@
+String colorGrey = "\033[1m";
+String colorBlack = "\033[0m";

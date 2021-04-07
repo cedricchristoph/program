@@ -1,0 +1,49 @@
+public static Object read(String message, String type){
+        /* 
+           Cedric's Advanced Reader.
+	   VARIABLES:
+		-> message: This given variable will be printed on scrren to the user
+		-> type: Indicate what type of data your asking for (string, integer, boolean)
+        */
+        Scanner scan = new Scanner(System.in);
+        System.out.println(message);
+        switch(type){
+            case "string":
+                return (String) scan.nextLine();
+            case "integer":
+                boolean correctInput = false;
+                int num = 0;
+                do{
+                    try{
+                        Scanner lector = new Scanner(System.in);
+                        num = lector.nextInt();
+                        correctInput = true;
+                    }catch(Exception ex){
+                        System.out.println("Entrada no válida, inténtelo de nuevo");
+                        System.out.println(message);
+                    }
+                }while(!(correctInput));
+                return num;
+                
+            case "boolean":
+                String input = scan.nextLine();
+                switch (input){
+                    case "si":
+                        return (boolean) true;
+                    case "yes":
+                        return (boolean) true;
+                    case "1":
+                        return (boolean) true;
+                    case "no":
+                        return (boolean) false;
+                    case "0":
+                        return (boolean) false;   
+                    default:
+                        System.out.println("ERROR: You have entered no valid value to convert to boolean");
+                        return (boolean) false;
+                }
+            default:
+                System.out.println("ERROR: You have not correctly specified which type of data you are looking for");
+                return (String) "";
+        }
+    }
