@@ -45,6 +45,12 @@ public class Currency {
         this.value = value;
     }
     
+    public void show() {
+        System.out.println("Name : " + getName());
+        System.out.println("Sign : " + getSign());
+        System.out.println("Value: " + getValue() + sign + " = 1$");
+    }
+    
     public double getConvertion(double amount, Currency convertion) {
         // THE DOLLAR HAS AN VALUE OF 1.
         // THE EURO IS 84% of a dollar (0.84€ = 1$)

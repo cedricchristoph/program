@@ -14,7 +14,7 @@ public class CuentaAhorro extends CuentaBancaria {
     public void mostrarDetalles(boolean showHeaders) {
         if (showHeaders)
             tb.printHeader("TIPO", "PROPIETARIO", "IBAN", "SALDO", "INTERESES");
-        tb.printRow("Ahorro", getPropietario(), getIban(), getSaldo() + " " + getCurrency(), "" + calcularIntereses() + "%");
+        tb.printRow("Ahorro", getPropietario(), getIban(), getSaldo() + " " + getCurrency().getSign(), "" + calcularIntereses() + "%");
     }
 
     @Override

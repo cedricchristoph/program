@@ -12,7 +12,7 @@ public class CuentaCorriente extends CuentaBancaria {
     public void mostrarDetalles(boolean showHeaders) {
         if (showHeaders)
             tb.printHeader("TIPO", "PROPIETARIO", "IBAN", "SALDO", "INTERESES");
-        tb.printRow("Corriente", getPropietario(), getIban(), getSaldo() + " " + getCurrency(), "" + calcularIntereses() + "%");
+        tb.printRow("Corriente", getPropietario(), getIban(), getSaldo() + " " + getCurrencySign(), "" + calcularIntereses() + "%");
     }
 
     @Override

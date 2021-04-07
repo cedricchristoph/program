@@ -4,12 +4,20 @@
  * and open the template in the editor.
  */
 package ejercicio_3_poo;
+import java.io.File;
 import java.util.*;
 public class Ejercicio_3_POO {
 
     public static void main(String[] args) {
-	    LinkedList<CuentaBancaria> cuentas = new LinkedList<CuentaBancaria>();
-	    TableConstructor menuBuilder = new TableConstructor();
+	LinkedList<CuentaBancaria> cuentas = new LinkedList<CuentaBancaria>();
+        LinkedList<Currency> currencies = loadCurrencies();
+	TableConstructor menuBuilder = new TableConstructor();
+        System.out.println("Available currencies: ");
+        for (Currency c : currencies) {
+            c.show();
+            System.out.println("-----------------------");
+        }
+        System.out.println("\n");
         do {
             menuPrincipal();
             int input = (Integer) read(" _:", "integer");
@@ -57,7 +65,7 @@ public class Ejercicio_3_POO {
                     selectIban = selectIban.replaceAll(" ", "");
                     for (CuentaBancaria cb : cuentas) {
                         if (cb.getIban().equals(selectIban)) {
-                            cuentas = seleccionarCuenta(cuentas, cb);
+                            cuentas = seleccionarCuenta(cuentas, cb, currencies);
                             break;
                         }
                     }
@@ -74,7 +82,7 @@ public class Ejercicio_3_POO {
         } while (true);
     }
 
-    public static LinkedList<CuentaBancaria> seleccionarCuenta(LinkedList<CuentaBancaria> cuentas, CuentaBancaria cb) {
+    public static LinkedList<CuentaBancaria> seleccionarCuenta(LinkedList<CuentaBancaria> cuentas, CuentaBancaria cb, LinkedList<Currency> currencies) {
         // GET INDEX OF CuentaBancaria in cuentas.
         int index = 0;
         for (CuentaBancaria x : cuentas) {
@@ -115,6 +123,15 @@ public class Ejercicio_3_POO {
                             (String) read("Nuevo propietario: ", "string")
                     );
                     break;
+                case 6:
+                    String uName = (String) read("Introduzca nombre de la nueva moneda:", "string");
+                    for (Currency c : currencies) {
+                        if (c.getName().equals(uName)) {
+                            cb.setCurrency(c);
+                            System.out.println("Currency changed to " + c.getSign());
+                        }
+                    }
+                    break;
             }
         } while (!(input==0));
 
@@ -140,6 +157,7 @@ public class Ejercicio_3_POO {
         System.out.println("4 Mostrar cuenta");
         System.out.println("--------------");
         System.out.println("5 Cambiar propietario");
+        System.out.println("6 Cambiar moneda");
         System.out.println("0 <-- Volver");
     }
 
@@ -205,5 +223,35 @@ public class Ejercicio_3_POO {
                 break;
         }
         return null;
+    }
+    
+    public static LinkedList<Currency> loadCurrencies() {
+        LinkedList<Currency> currencies = new LinkedList<Currency>();
+        try {
+            File myObj = new File("C:\\Users\\Inf2\\Documents\\Repositorios\\program\\NetBeansProjects\\Ejercicio_3_POO\\src\\ejercicio_3_poo\\currencies.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String dataLine = myReader.nextLine().replaceAll(" ", "");
+                String cName = "not available";
+                String cSign = "not available";
+                double cValue = 0;
+                String[] information = dataLine.split(",");
+                for (String element : information) {
+                    String[] data = element.split("=");
+                    if (data[0].equals("name"))
+                        cName = data[1];
+                    if (data[0].equals("sign"))
+                        cSign = data[1];
+                    if (data[0].equals("value"))
+                        cValue = Double.parseDouble(data[1]);
+                }
+                Currency c = new Currency(cName, cSign, cValue);
+                currencies.add(c);
+            }
+        } catch (Exception ex) {
+            System.out.println("Ha ocurrido un error: ");
+            System.out.println(ex.toString());
+        }
+        return currencies;
     }
 }

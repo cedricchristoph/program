@@ -7,7 +7,7 @@ public abstract class CuentaBancaria {
     private String iban;
     private double saldo;
     private final double interesAnualBasico;
-    private String currency = "€";
+    private Currency currency;
     protected TableConstructor tb = new TableConstructor();
 
     // CONSTRUCTORS
@@ -17,10 +17,31 @@ public abstract class CuentaBancaria {
         this.iban = iban;
         saldo = 0d;
         this.interesAnualBasico = interesAnualBasico;
-
+        this.currency = new Currency("Dollar", "$", 1);
+        
         tb.setAllSizes(20);
     }
-
+    public CuentaBancaria(String propietario, String iban, double interesAnualBasico, Currency currency) {
+        this.propietario = propietario;
+        iban = iban.replaceAll(" ", "");
+        this.iban = iban;
+        saldo = 0d;
+        this.interesAnualBasico = interesAnualBasico;
+        this.currency = currency;
+        
+        tb.setAllSizes(20);
+    }
+    public CuentaBancaria(String propietario, String iban, double interesAnualBasico, Currency currency, double startCapital) {
+        this.propietario = propietario;
+        iban = iban.replaceAll(" ", "");
+        this.iban = iban;
+        saldo = startCapital;
+        this.interesAnualBasico = interesAnualBasico;
+        this.currency = currency;
+        
+        tb.setAllSizes(20);
+    }
+    
     // GETTERS
     public String getIban() {
         return iban;
@@ -32,10 +53,12 @@ public abstract class CuentaBancaria {
     public double getInteresAnualBasico() {
         return interesAnualBasico;
     }
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
-
+    public String getCurrencySign() {
+        return currency.getSign();
+    }
     // SETTERS
     public void setIban(String iban) {
         iban = iban.replaceAll(" ", "");
@@ -47,7 +70,7 @@ public abstract class CuentaBancaria {
     public void setPropietario(String propietario) {
         this.propietario = propietario;
     }
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
@@ -80,13 +103,13 @@ public abstract class CuentaBancaria {
         for (Iterator<CuentaBancaria> it = cuentas.iterator(); it.hasNext(); ) {
             CuentaBancaria c = it.next();
             if (c.getIban().equals(ibanDestinatario)) {
-                c.ingresar(cantidad);
+                c.ingresar(currency.getConvertion(cantidad, c.getCurrency()));
                 retirar(cantidad);
                 System.out.println("Transferencia completada.");
                 System.out.println("DETALLES DE TRANSFERENCIA");
-                System.out.println("    - SALDO DE CUENTA (antes) : " + (saldo+cantidad) + " " + getCurrency());
-                System.out.println("    - DINERO TRANSFERIDO      : " + cantidad + " " + getCurrency() + " --> " + ibanDestinatario);
-                System.out.println("    - SALDO DE CUENTA (actual): " + (saldo) + " " + getCurrency());
+                System.out.println("    - SALDO DE CUENTA (antes) : " + (saldo+cantidad) + " " + getCurrencySign());
+                System.out.println("    - DINERO TRANSFERIDO      : " + cantidad + " " + getCurrencySign() + " --> " + ibanDestinatario);
+                System.out.println("    - SALDO DE CUENTA (actual): " + (saldo) + " " + getCurrencySign());
             }
         }
         return cuentas;
@@ -96,6 +119,7 @@ public abstract class CuentaBancaria {
 
     // PRIVATE/PROTECTED METHODS
     protected void changeSaldo(double cantidad) {
+        
         if (cantidad < 0) {
             // RETIRAR
             if (cantidad > saldo) {
