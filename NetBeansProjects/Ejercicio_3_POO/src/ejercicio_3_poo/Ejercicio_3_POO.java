@@ -55,8 +55,7 @@ public class Ejercicio_3_POO {
                 case 3:
                     String selectIban = (String) read("IBAN: ", "string");
                     selectIban = selectIban.replaceAll(" ", "");
-                    for (Iterator<CuentaBancaria> it = cuentas.iterator(); it.hasNext(); ) {
-                        CuentaBancaria cb = it.next();
+                    for (CuentaBancaria cb : cuentas) {
                         if (cb.getIban().equals(selectIban)) {
                             cuentas = seleccionarCuenta(cuentas, cb);
                             break;
@@ -67,8 +66,7 @@ public class Ejercicio_3_POO {
                     TableConstructor tb = new TableConstructor();
                     tb.setAllSizes(20);
                     tb.printHeader("PROPIETARIO", "IBAN", "TIPO");
-                    for (Iterator<CuentaBancaria> it = cuentas.iterator(); it.hasNext(); ) {
-                        CuentaBancaria cb = it.next();
+                    for (CuentaBancaria cb : cuentas) {
                         cb.show(false);
                     }
                     break;
@@ -79,8 +77,7 @@ public class Ejercicio_3_POO {
     public static LinkedList<CuentaBancaria> seleccionarCuenta(LinkedList<CuentaBancaria> cuentas, CuentaBancaria cb) {
         // GET INDEX OF CuentaBancaria in cuentas.
         int index = 0;
-        for (Iterator<CuentaBancaria> it = cuentas.iterator(); it.hasNext(); ) {
-            CuentaBancaria x = it.next();
+        for (CuentaBancaria x : cuentas) {
             if (!(x.getIban().equals(cb.getIban()))) {
                 index += 1;
             } else {
@@ -88,7 +85,7 @@ public class Ejercicio_3_POO {
             }
         }
 
-        int input = 0;
+        int input;
         do {
             menuSecundario(cb.getPropietario(), cb.getIban());
             input = (Integer) read(" _: ", "integer");
@@ -148,8 +145,8 @@ public class Ejercicio_3_POO {
 
 
     public static Object read(String msg, String type, String... enumeration) {
-        boolean hasFilter = false;
-        boolean correctInput = false;
+        boolean hasFilter;
+        boolean correctInput;
 
         try {
             String test = enumeration[0];
@@ -167,14 +164,15 @@ public class Ejercicio_3_POO {
                     do {
                         System.out.println(msg);
                         String entrada = scan.nextLine();
-                        for (int i = 0; i < enumeration.length; i++) {
-                            if (enumeration[i].equals(entrada))
+                        for (String element : enumeration) {
+                            if (element.equals(entrada)) {
                                 return entrada;
+                            }
                         }
                     } while (true);
                 }
             case "integer":
-                correctInput = false;
+                
                 int num = 0;
                 System.out.println(msg);
                 do {
@@ -186,21 +184,22 @@ public class Ejercicio_3_POO {
                     }
                 } while (!(correctInput));
                 return num;
+                
             case "double":
-                double d = 0d;
-                correctInput = false;
+                double d = 0;
                 System.out.println(msg);
                 do {
                     try {
                         d = scan.nextDouble();
-                        return d;
+                        correctInput = true;
                     } catch (InputMismatchException ex) {
                         System.out.println("Utilice ',' para indicar céntimos");
                         correctInput = false;
                         scan.nextLine();
                     }
                 } while (!(correctInput));
-                break;
+                return d;
+                
             case "boolean":
 
                 break;

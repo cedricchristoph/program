@@ -50,7 +50,7 @@ public class Currency {
         // THE EURO IS 84% of a dollar (0.84€ = 1$)
         // THE POUND IS 72% of a dollar (0.72₤ = 1$)
         // 10€ -> $ -> POUND
-        double dollarAmount = (amount * getValue());
-        return 0d;
+        double dollarAmount = amount/getValue();
+        return (dollarAmount*convertion.getValue());
     }
 }
