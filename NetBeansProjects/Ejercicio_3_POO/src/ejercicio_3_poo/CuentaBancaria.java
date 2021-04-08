@@ -100,8 +100,7 @@ public abstract class CuentaBancaria {
         }
         // TRANSFER
         ibanDestinatario = ibanDestinatario.replaceAll(" ", "");
-        for (Iterator<CuentaBancaria> it = cuentas.iterator(); it.hasNext(); ) {
-            CuentaBancaria c = it.next();
+        for (CuentaBancaria c : cuentas) {
             if (c.getIban().equals(ibanDestinatario)) {
                 c.ingresar(currency.getConvertion(cantidad, c.getCurrency()));
                 retirar(cantidad);
