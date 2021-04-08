@@ -11,12 +11,7 @@ public class Ejercicio_3_POO {
     public static void main(String[] args) {
 	LinkedList<CuentaBancaria> cuentas = new LinkedList<CuentaBancaria>();
         LinkedList<Currency> currencies = loadCurrencies();
-	TableConstructor menuBuilder = new TableConstructor();
-        System.out.println("Available currencies: ");
-        for (Currency c : currencies) {
-            c.show();
-            System.out.println("-----------------------");
-        }
+        
         System.out.println("\n");
         do {
             menuPrincipal();
@@ -128,7 +123,7 @@ public class Ejercicio_3_POO {
                     for (Currency c : currencies) {
                         if (c.getName().equals(uName)) {
                             cb.setCurrency(c);
-                            System.out.println("Currency changed to " + c.getSign());
+                            System.out.println("Moneda cambiada a " + c.getSign());
                         }
                     }
                     break;
@@ -141,6 +136,9 @@ public class Ejercicio_3_POO {
     }
 
     public static void menuPrincipal() {
+        TableConstructor menuBuilder = new TableConstructor();
+        System.out.println("");
+        menuBuilder.printHeader("MENU PRINCIPAL");
         System.out.println("1 Crear cuenta");
         System.out.println("2 Eliminar cuenta");
         System.out.println("3 Seleccionar cuenta");
@@ -149,15 +147,17 @@ public class Ejercicio_3_POO {
     }
 
     public static void menuSecundario(String propietario, String iban) {
-        System.out.println(propietario.toUpperCase() + " // " + iban.toUpperCase());
-        System.out.println("1 Ingresar");
-        System.out.println("2 Retirar");
-        System.out.println("3 Transferir");
-        System.out.println("--------------");
-        System.out.println("4 Mostrar cuenta");
-        System.out.println("--------------");
-        System.out.println("5 Cambiar propietario");
-        System.out.println("6 Cambiar moneda");
+        TableConstructor menuBuilder = new TableConstructor();
+        System.out.println("");
+        menuBuilder.printHeader(propietario.toUpperCase(), "IBAN: " + iban.toUpperCase());
+        System.out.println("1 Ingresar dinero");
+        System.out.println("2 Retirar dinero");
+        System.out.println("3 Transferir dinero");
+        System.out.println("..................................");
+        System.out.println("4 Mostrar detalles de cuenta");
+        System.out.println("..................................");
+        System.out.println("5 Cambiar propietario de cuenta");
+        System.out.println("6 Cambiar moneda de cuenta");
         System.out.println("0 <-- Volver");
     }
 

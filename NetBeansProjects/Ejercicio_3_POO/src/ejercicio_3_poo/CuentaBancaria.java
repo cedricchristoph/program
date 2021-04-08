@@ -1,5 +1,7 @@
 package ejercicio_3_poo;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public abstract class CuentaBancaria {
@@ -71,6 +73,9 @@ public abstract class CuentaBancaria {
         this.propietario = propietario;
     }
     public void setCurrency(Currency currency) {
+        double tmpSaldo = saldo;
+        retirar(saldo);
+        ingresar(this.currency.getConvertion(tmpSaldo, currency));
         this.currency = currency;
     }
 
@@ -118,7 +123,8 @@ public abstract class CuentaBancaria {
 
     // PRIVATE/PROTECTED METHODS
     protected void changeSaldo(double cantidad) {
-        
+        DecimalFormat df2 = new DecimalFormat("#.##");
+        df2.setRoundingMode(RoundingMode.CEILING);
         if (cantidad < 0) {
             // RETIRAR
             if (cantidad > saldo) {
@@ -130,5 +136,6 @@ public abstract class CuentaBancaria {
             // INGRESAR
             saldo += cantidad;
         }
+        saldo = Double.parseDouble(df2.format(saldo));
     }
 }
