@@ -83,7 +83,7 @@ public abstract class CuentaBancaria {
 
     public abstract void mostrarDetalles(boolean showHeaders);
     public abstract void show(boolean showHeaders);
-
+    
     public void ingresar(double cantidad) {
         changeSaldo(cantidad);
     }
@@ -92,7 +92,7 @@ public abstract class CuentaBancaria {
         changeSaldo(-cantidad);
     }
 
-    public LinkedList<CuentaBancaria> transferir(LinkedList<CuentaBancaria> cuentas, String ibanDestinatario, double cantidad) {
+    public LinkedList<CuentaBancaria> transferir(LinkedList<CuentaBancaria> cuentas, String ibanDestinatario, double cantidad) throws Exception{
         
         // CHECK SUFFICIENT BALANCE
         if (cantidad > saldo) {
@@ -101,14 +101,16 @@ public abstract class CuentaBancaria {
             System.out.println("    - SALDO DE CUENTA     : " + saldo + " " + getCurrency());
             System.out.println("    - DINERO A TRANSFERIR : " + cantidad + " " + getCurrency());
             System.out.println("    - FALTA               : " + (cantidad - saldo) + " " + getCurrency());
-            return cuentas;
+            throw new Exception("No hay suficiente saldo en su cuenta");
         }
         // TRANSFER
         ibanDestinatario = ibanDestinatario.replaceAll(" ", "");
+        boolean transferComplete = false;
         for (CuentaBancaria c : cuentas) {
             if (c.getIban().equals(ibanDestinatario)) {
                 c.ingresar(currency.getConvertion(cantidad, c.getCurrency()));
                 retirar(cantidad);
+                transferComplete = true;
                 System.out.println("Transferencia completada.");
                 System.out.println("DETALLES DE TRANSFERENCIA");
                 System.out.println("    - SALDO DE CUENTA (antes) : " + (saldo+cantidad) + " " + getCurrencySign());
@@ -116,6 +118,9 @@ public abstract class CuentaBancaria {
                 System.out.println("    - SALDO DE CUENTA (actual): " + (saldo) + " " + getCurrencySign());
             }
         }
+        if (!(transferComplete))
+            throw new Exception("No se ha encontrado ninguna cuenta con el IBAN indicado");
+        
         return cuentas;
     }
 

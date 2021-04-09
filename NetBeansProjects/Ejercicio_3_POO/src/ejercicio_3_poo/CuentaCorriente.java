@@ -21,7 +21,7 @@ public class CuentaCorriente extends CuentaBancaria {
             tb.printHeader("PROPIETARIO", "IBAN", "TIPO");
         tb.printRow(getPropietario(), getIban(), "Corriente");
     }
-
+    
     @Override
     public double calcularIntereses() {
         return getInteresAnualBasico();

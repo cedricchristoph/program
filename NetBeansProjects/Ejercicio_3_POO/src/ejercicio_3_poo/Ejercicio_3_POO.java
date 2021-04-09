@@ -11,7 +11,10 @@ public class Ejercicio_3_POO {
     public static void main(String[] args) {
 	LinkedList<CuentaBancaria> cuentas = new LinkedList<CuentaBancaria>();
         LinkedList<Currency> currencies = loadCurrencies();
+        MenuPrincipal mp = new MenuPrincipal();
+        mp.show();
         
+            /*
         System.out.println("\n");
         do {
             menuPrincipal();
@@ -74,9 +77,9 @@ public class Ejercicio_3_POO {
                     }
                     break;
             }
-        } while (true);
+        } while (true); */
     }
-
+/*
     public static LinkedList<CuentaBancaria> seleccionarCuenta(LinkedList<CuentaBancaria> cuentas, CuentaBancaria cb, LinkedList<Currency> currencies) {
         // GET INDEX OF CuentaBancaria in cuentas.
         int index = 0;
@@ -134,7 +137,7 @@ public class Ejercicio_3_POO {
         cuentas.add(index, cb);
         return cuentas;
     }
-
+*/
     public static void menuPrincipal() {
         TableConstructor menuBuilder = new TableConstructor();
         System.out.println("");
