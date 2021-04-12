@@ -7,6 +7,10 @@ public class CuentaCorriente extends CuentaBancaria {
         super(propietario, iban, interesAnualBasico);
     }
 
+    CuentaCorriente() {
+        super();
+    }
+
     // PUBLIC METHODS
     @Override
     public void mostrarDetalles(boolean showHeaders) {

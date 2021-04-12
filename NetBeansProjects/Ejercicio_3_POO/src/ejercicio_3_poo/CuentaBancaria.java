@@ -44,6 +44,10 @@ public abstract class CuentaBancaria {
         tb.setAllSizes(20);
     }
     
+    public CuentaBancaria() {
+        this.interesAnualBasico = 0;
+    }
+    
     // GETTERS
     public String getIban() {
         return iban;
@@ -91,6 +95,13 @@ public abstract class CuentaBancaria {
     public void retirar(double cantidad) {
         changeSaldo(-cantidad);
     }
+    
+    public void convertirSaldo(Currency toConvert) {
+        double tmpSaldo = saldo;
+        ingresar(currency.getConvertion(saldo, toConvert));
+        retirar(tmpSaldo);
+    }
+    
 
     public LinkedList<CuentaBancaria> transferir(LinkedList<CuentaBancaria> cuentas, String ibanDestinatario, double cantidad) throws Exception{
         

@@ -21,6 +21,12 @@ public class Currency {
         this.value = value;
     }
 
+    Currency() {
+        this.name = "not specified";
+        this.sign = "not specified";
+        this.value = 1;
+    }
+
     public String getName() {
         return name;
     }
