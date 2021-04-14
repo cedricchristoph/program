@@ -98,7 +98,7 @@ public abstract class CuentaBancaria {
     
     public void convertirSaldo(Currency toConvert) {
         double tmpSaldo = saldo;
-        ingresar(currency.getConvertion(saldo, toConvert));
+        ingresar(currency.getConvertion(tmpSaldo, toConvert));
         retirar(tmpSaldo);
     }
     
@@ -129,6 +129,7 @@ public abstract class CuentaBancaria {
                 System.out.println("    - SALDO DE CUENTA (actual): " + (saldo) + " " + getCurrencySign());
             }
         }
+        
         if (!(transferComplete))
             throw new Exception("No se ha encontrado ninguna cuenta con el IBAN indicado");
         
@@ -152,6 +153,10 @@ public abstract class CuentaBancaria {
             // INGRESAR
             saldo += cantidad;
         }
-        saldo = Double.parseDouble(df2.format(saldo));
+        try{
+            saldo = Double.parseDouble(df2.format(saldo));
+        } catch (Exception ex) {
+            
+        }
     }
 }

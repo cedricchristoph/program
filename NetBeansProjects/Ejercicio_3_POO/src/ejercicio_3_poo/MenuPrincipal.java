@@ -93,6 +93,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         confirmarBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         cuentas_lista = new javax.swing.JTable();
+        editarCuentaBtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(251, 251, 251));
@@ -402,7 +403,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel19.setText("Moneda");
 
         monedasComboBox.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 14)); // NOI18N
-        monedasComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "€", "$", " ", " " }));
         monedasComboBox.setEnabled(false);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Transferencia", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Yu Gothic UI Semilight", 0, 14))); // NOI18N
@@ -543,6 +543,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(cuentas_lista);
         cuentas_lista.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
+        editarCuentaBtn1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+        editarCuentaBtn1.setText("Refrescar");
+        editarCuentaBtn1.setActionCommand("");
+        editarCuentaBtn1.setName("seleccionarBtn"); // NOI18N
+        editarCuentaBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editarCuentaBtn1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -553,7 +563,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addComponent(texto1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(editarCuentaBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jTabbedPane1))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -598,19 +611,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(texto1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(texto1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel4)
                         .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -649,7 +654,18 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(editarCuentaBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -657,7 +673,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void eliminarCuentaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCuentaBtnActionPerformed
-        // TODO add your handling code here:
+        if (JOptionPane.showConfirmDialog(this, "Eliminar cuenta " + tf_Iban.getText() + " ?", "Seleccione", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
+            cuentas.remove(getCuentaBancaria(tf_Iban.getText()));
+            JOptionPane.showMessageDialog(this, 
+                    "Eliminado satisfactoriamente");
+        }
     }//GEN-LAST:event_eliminarCuentaBtnActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -739,20 +759,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
         CuentaBancaria cb = cuentaEdicion;
         cuentas.remove(cb);
         
-        Currency currency = new Currency();
-        for (Currency c : currencies) {
-            if (c.getSign().equals(monedasComboBox.getSelectedItem())) {
-                currency = c;
-                if (!(c.getSign().equals(cb.getCurrencySign()))) {
-                    // CONVERCIÓN DE MONEDAS
+        if (!(cb.getCurrency().getName().equals(monedasComboBox.getSelectedItem()))) {
+            for (Currency c : currencies) {
+                if (c.getName().equals(monedasComboBox.getSelectedItem())) {
                     cb.convertirSaldo(c);
-                    JOptionPane.showMessageDialog(this, "Conversión de moneda satisfactoria");
+                    cb.setCurrency(c);
                 }
             }
         }
+        
         cb.setPropietario(tf_Propietario.getText());
         cb.setIban(tf_Iban.getText());
-        cb.setCurrency(currency);
         
         cuentas.add(cb);
         refreshAccounts();
@@ -826,6 +843,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cuentas_listaMouseClicked
 
+    private void editarCuentaBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarCuentaBtn1ActionPerformed
+        refreshAccounts();
+    }//GEN-LAST:event_editarCuentaBtn1ActionPerformed
+
     
     
     
@@ -865,18 +886,23 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
     
     public void selectAccount(CuentaBancaria cb) {
+        reloadComboBox();
         tf_Propietario.setText(cb.getPropietario());
         tf_Iban.setText(cb.getIban());
         tf_Intereses.setText("" + cb.getInteresAnualBasico());
         tf_Saldo.setText("" + cb.getSaldo() + " " + cb.getCurrencySign());
         activateAccountBtns();
         for (int i=0; i < monedasComboBox.getItemCount(); i++) {
-            for (Currency c : currencies) {
-                if (c.getSign().equals(monedasComboBox.getItemAt(i))) {
-                    monedasComboBox.setSelectedIndex(i);
-                    break;
-                }
+            if (monedasComboBox.getItemAt(i).equals(cb.getCurrency().getName())) {
+                monedasComboBox.setSelectedIndex(i);
             }
+        }
+    }
+    
+    public void reloadComboBox() {
+        monedasComboBox.removeAllItems();
+        for (Currency c : currencies) {
+            monedasComboBox.addItem(c.getName());
         }
     }
     
@@ -897,6 +923,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
         tf_Intereses.setEnabled(false);
         monedasComboBox.setEnabled(false);
     }
+    
+    public void deactivateAccountBtns() {
+        editarCuentaBtn.setEnabled(false);
+        eliminarCuentaBtn.setEnabled(false);
+        guardarCuentaBtn.setEnabled(false);
+        ingresarBtn.setEnabled(false);
+        retirarBtn.setEnabled(false);
+        transferirBtn.setEnabled(false);
+        confirmarTransferenciaBtn.setEnabled(false);
+        tf_IbanDestinatario.setEnabled(false);
+        tf_Cantidad.setEnabled(false);
+        tf_Cantidad2.setEnabled(false);
+        confirmarBtn.setEnabled(false);
+        tf_Propietario.setEnabled(false);
+        tf_Iban.setEnabled(false);
+        tf_Intereses.setEnabled(false);
+        monedasComboBox.setEnabled(false);
+    }
 
     public CuentaBancaria getCuentaBancaria(String iban) {
         for (CuentaBancaria cb : cuentas) {
@@ -907,20 +951,27 @@ public class MenuPrincipal extends javax.swing.JFrame {
         return null;
     }
     
-    
-    public void addAccount() {
-        CuentaBancaria cb = new CuentaCorriente("Cedric Christoph", "ES123", 2);
-        cuentas.add(cb);
+    public void clearSelection() {
+        tf_Propietario.setText("");
+        tf_Iban.setText("");
+        tf_Intereses.setText("");
+        tf_Saldo.setText("");
+        deactivateAccountBtns();
     }
     
     public void refreshAccounts() {  
+        
         DefaultTableModel model = (DefaultTableModel) cuentas_lista.getModel();
         // ELIMINAR LISTA
-        for (int i=0; i<model.getRowCount(); i++) {
-            model.removeRow(i);
+        System.out.println("Existen " + cuentas_lista.getRowCount() + " filas");
+        
+        for (int i=1; i < cuentas_lista.getRowCount()+1; i++) {
+            System.out.println("Eliminando " + i);
+            model.removeRow(i-1);            
         }
         // LLENAR LISTA
         for (CuentaBancaria cb : cuentas) {
+            System.out.println("Añadiendo " + cb.getIban());
             model.addRow(new Object[]{cb.getPropietario(), cb.getIban()});
         }
     }
@@ -931,6 +982,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton createCorrienteBtn;
     private javax.swing.JTable cuentas_lista;
     private javax.swing.JButton editarCuentaBtn;
+    private javax.swing.JButton editarCuentaBtn1;
     private javax.swing.JButton eliminarCuentaBtn;
     private javax.swing.JButton guardarCuentaBtn;
     private javax.swing.JButton ingresarBtn;
