@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
- * IconLoader class. Used for loading the icons shown on the playground maps.
+ * Used for loading the icons shown on the playground maps.
  * @author Cedric Christoph
  * @since 1.1.0
  * @version 1.0.0

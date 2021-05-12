@@ -1,7 +1,7 @@
 package Game;
 
 /**
- * Field class. This class builds a field in a playground map.
+ * This class builds a field in a playground map.
  * @author Cedric Christoph
  * @since 1.0.0
  * @version 1.0.0

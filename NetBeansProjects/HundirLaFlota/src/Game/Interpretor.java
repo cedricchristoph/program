@@ -1,7 +1,7 @@
 package Game;
 
 /**
- * Interpretor class. This class is used to convert strings into playground maps.
+ * Class used to convert strings into playground maps.
  * @author Cedric Christoph
  * @since 1.0.0
  * @version 1.0.0

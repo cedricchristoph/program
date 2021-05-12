@@ -6,7 +6,7 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
- * Logger class. This class is used to properly save and load game files.
+ * This class is used to properly save and load game files.
  * @author Cedric Christoph
  * @since 1.0.0
  * @version 1.0.0
@@ -167,7 +167,7 @@ public class Logger {
         String[] line = {"", ""};
         while(!(line[0].equals("finished"))) {
             if (lineCount > 10) {
-                JOptionPane.showMessageDialog(null, "Status file damaged", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Status file corrupted", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             }
             line = scan.nextLine().split(":");

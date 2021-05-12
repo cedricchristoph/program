@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 /**
- * This is the main display for playing the game
+ * This is the visual display that shows the game.
  * @author Cedric Christoph
  * @since 1.0.0
  * @version 1.1.0
@@ -1129,7 +1129,6 @@ public class Display extends javax.swing.JFrame {
      *  Every JButton shoots at it's location on the playground and saves the returned value
      *  in lastHitted. After that, it executes cargarHistorial.
      */
-    
     private void six_7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_six_7ActionPerformed
         lastHitted = partida.shoot(6, 7);
         cargarHistorial();

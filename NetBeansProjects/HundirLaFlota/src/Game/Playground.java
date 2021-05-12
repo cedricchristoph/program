@@ -1,10 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Game;
 
+/**
+ * Playground for each player includes the map and the methods for shooting, etc.
+ * @author Cedric Christoph
+ * @since 1.0.0
+ * @version 1.0.0
+ */
 public class Playground {
     String player;
     Field[][] map;

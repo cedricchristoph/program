@@ -3,7 +3,7 @@ package Game;
 import javax.swing.JOptionPane;
 
 /**
- * Game class. This class is used for the actual game to work.
+ * This class is used for the actual game to work.
  * @author Cedric Christoph
  * @since 1.0.0
  * @version 1.0.0

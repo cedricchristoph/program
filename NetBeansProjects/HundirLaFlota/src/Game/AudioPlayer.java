@@ -6,7 +6,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 /**
- *
+ * Responsible for playing sounds
  * @author Cedric Christoph
  * @since 1.1.0
  * @version 1.0.0

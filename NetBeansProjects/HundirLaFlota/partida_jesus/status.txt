@@ -1,2 +1,2 @@
-turn:2
-finished:true
+turnag:1
+finished:false
