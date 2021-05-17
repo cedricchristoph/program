@@ -21,7 +21,7 @@ public class Interpretor {
      * @param input String
      * @return A playground map (Field[][])
      */
-    public Field[][] convert (String input) {
+    public static Field[][] convert (String input) {
         int counter = 0;
         for (char c : input.toCharArray()) {
             if (Character.toString(c).equals("|"))

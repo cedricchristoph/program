@@ -23,12 +23,23 @@ import game.*;
  */
 public class GameServer {
     
+    public static String version = "1.0.0";
+    public static String info = "################ GAME SERVER ################\n" +
+                                "# VERSION: " + version + "                            #\n" +
+                                "# INSTRUCTIONS:                             #\n" +
+                                "#  > Check your IP and Port settings        #\n" +
+                                "#     - Type 'change port' to change port   #\n" +
+                                "#  > Start the server by typing 'start'     #\n" +
+                                "#  > Stop the server by typing 'shutdown'   #\n" +
+                                "#  > 'accept' to let a player join          #\n" +
+                                "#############################################\n\n";
+    InetAddress ip;
+
     public final int HOST = 0, GUEST = 1, ALL = 2;
     
     /**
      * Connection variables
      */
-    private String ip;
     private static int port;
     private Set<String> userNames = new HashSet<>();
     private Set<UserThread> userThreads = new HashSet<>();
@@ -36,7 +47,7 @@ public class GameServer {
     private final ServerSocket serverSocket;
     
     private boolean isConnected;
-    private UserThread host;
+    private HostThread host;
     private UserThread guest;
     
     
@@ -54,10 +65,9 @@ public class GameServer {
     }
  
     public void execute() throws IOException {
-        
+            ip = InetAddress.getLocalHost();
             System.out.println("\n[STATUS]: Up");
-            System.out.println("\nIP: " + serverSocket.getLocalSocketAddress());
-            System.out.println("Port: " + serverSocket.getLocalPort());
+            System.out.println("\nIP: " + ip + ":" + serverSocket.getLocalPort());
             isConnected = true;
             while(true){
                 String cmd = getString("$: ");
@@ -67,13 +77,13 @@ public class GameServer {
                             System.out.println("Waiting for users to connect...");
                             Socket socket = serverSocket.accept();
                             if (userNames.isEmpty()) {
-                                host = new UserThread(socket, this);
+                                host = new HostThread(socket, this);
                                 host.start();
-                                System.out.println("HOST_CONNECTED");
+                                System.out.println("Host has connected to the server");
                             } else {
                                 guest = new UserThread(socket, this);
                                 guest.start();
-                                System.out.println("USER_CONNECTED");
+                                System.out.println("User has connected to the server");
                             }
                         } else {
                             System.out.println("No server running");
@@ -93,10 +103,10 @@ public class GameServer {
                             stopGame();
                         System.exit(0);
                         break;
-                    case "ip":
+                    case "change port":
                         System.out.print("Introduzca nuevo puerto: ");
                         port = getInt();
-                        System.out.println("Puerto actualizado. Servidor tiene que reiniciar para hacer efecto.");
+                        System.out.println("El puerto será actualizando en cuanto se reinicie el servidor");
                         break;
                     case "restart":
                         stopGame();
@@ -105,7 +115,7 @@ public class GameServer {
                         server.execute();
                     default:
                         if (isConnected)
-                            broadcast(cmd, ALL);
+                            broadcast(cmd, ALL, true);
                         else 
                             System.out.println("No server running");
                 }
@@ -113,10 +123,9 @@ public class GameServer {
     }
 
     public void startGame() {
-        interpretor = new Interpretor();
         // REQUEST Playgrounds from players
         try {
-            Playground one = new Playground("Player One", interpretor.convert(host.requestPlayground()));
+            Playground one = new Playground("Player One", Interpretor.convert(host.requestPlayground()));
             one.toString();
         } catch (Exception e) {
             System.out.println("An unknown error ocurred");
@@ -133,7 +142,8 @@ public class GameServer {
         if (isConnected) {
             try {
             
-                broadcast("Server is shutting down...", ALL);
+                broadcast("[STATUS]: Shutting down...", ALL, true);
+                host.
                 serverSocket.close();
              
             } catch (IOException e) {
@@ -146,8 +156,8 @@ public class GameServer {
     }
     
     public static void main(String[] args) {
-        System.out.print("To start the game server please enter a port: ");
-        port = getInt();
+        System.out.println(info);
+        port = 8686;
         System.out.println("[STATUS]: Starting...");
         try {
             GameServer server = new GameServer(port);
@@ -176,19 +186,24 @@ public class GameServer {
     /**
      * Delivers a message from one user to others (broadcasting)
      */
-    void broadcast(String message, int destination) {
+    void broadcast(String message, int destination, boolean show) {
+        
         try {
             switch (destination) {
             case HOST:
+                if (show)
+                    System.out.println("<Host received> : " + message);
                 host.sendMessage(message);
                 break;
             case GUEST:
+                if (show)
+                    System.out.println("<Guest received> : " + message);
                 guest.sendMessage(message);
                 break;
             default:
-                broadcast(message, HOST);
-                broadcast(message, GUEST);
-                System.out.println("GLOBAL MESSAGE: " + message);
+                broadcast(message, HOST, false);
+                broadcast(message, GUEST, false);
+                System.out.println("<Everyone received> : " + message);
                 break;
             }
         } catch (NullPointerException e) {

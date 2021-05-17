@@ -16,17 +16,18 @@ import java.util.logging.Logger;
  *
  * @author www.codejava.net
  */
-public class UserThread extends Thread {
+public class HostThread extends Thread {
     private Socket socket;
     private GameServer server;
     private PrintWriter writer;
     private Integer player = null;
     
     
-    public UserThread(Socket socket, GameServer server) {
+    public HostThread(Socket socket, GameServer server) {
         this.socket = socket;
         this.server = server;
     }
+    
  
     public void run() {
         try {
@@ -36,12 +37,7 @@ public class UserThread extends Thread {
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
  
-            if (server.hasUsers()) {
-                server.broadcast("REGISTER:Player Two", server.GUEST, true); 
-                player = 2;
-            } else {
-                server.broadcast("REGISTER:Player One", server.HOST, true);
-            }
+            server.broadcast("Welcome player! You are the host.", server.HOST, true);
             
             String serverMessage;
             String clientMessage;
@@ -49,9 +45,9 @@ public class UserThread extends Thread {
             do {
                 clientMessage = reader.readLine();
                 serverMessage = "[" + player + "]: " + clientMessage;
-                server.broadcast(serverMessage, server.ALL, true);
- 
-            } while (!clientMessage.equals("bye"));
+                server.broadcast(serverMessage, server.GUEST, true);
+               
+            } while (!clientMessage.equals("leave"));
  
             socket.close();
  
@@ -59,10 +55,7 @@ public class UserThread extends Thread {
             
             
         } catch (IOException ex) {
-            if (!(player == null))
-                System.out.println("Connection lost with user " + player); 
-            else
-                System.out.println("Connection lost with an unknown user");
+            System.out.println("Connection lost with host"); 
         }
     }
  
