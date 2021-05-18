@@ -141,9 +141,8 @@ public class GameServer {
     public void stopGame() {
         if (isConnected) {
             try {
-            
                 broadcast("[STATUS]: Shutting down...", ALL, true);
-                host.
+                host.stop();
                 serverSocket.close();
              
             } catch (IOException e) {

@@ -35,22 +35,17 @@ public class GameClient {
  
     public void execute() {
         try {
-            Socket socket = new Socket(hostname, port);
-            System.out.println("Estableciendo conexión...");
-            
-            input = new ReadThread(socket, this);
-            output = new WriteThread(socket, this);
-            
-            input.run();
-            output.run();
+            Socket socket = new Socket(hostname, port);            
+            new ReadThread(socket, this).run();
+            new WriteThread(socket, this).run();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
+            System.out.println("Server not running");
         }
  
     }
- 
+    
     void setUserName(String userName) {
         this.userName = userName;
     }
@@ -60,7 +55,12 @@ public class GameClient {
     }
  
     public void connect() {      
-        GameClient client = new GameClient(hostname, port);
-        client.execute();
+        do {
+            GameClient client = new GameClient(hostname, port);
+            System.out.println("Estableciendo conexión...");
+            client.execute();
+            System.out.println("\n'retry' / 'exit'");
+        } while (!(new Scanner(System.in).nextLine()).equals("exit"));
+        System.exit(0);
     }
 }
