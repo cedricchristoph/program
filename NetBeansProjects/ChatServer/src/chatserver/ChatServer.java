@@ -26,11 +26,11 @@ public class ChatServer {
     public void execute() {
         try (ServerSocket serverSocket = new ServerSocket(8686)) {
  
-            System.out.println("Chat Server is listening on port " + 8686);
+            System.out.println("[SERVER]: RUNNING... ");
  
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New user connected");
+                System.out.println("[SERVER]: New user connected");
  
                 UserThread newUser = new UserThread(socket, this);
                 userThreads.add(newUser);
@@ -39,7 +39,7 @@ public class ChatServer {
             }
  
         } catch (IOException ex) {
-            System.out.println("Error in the server: " + ex.getMessage());
+            System.out.println("[SERVER]/ERROR: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -53,13 +53,11 @@ public class ChatServer {
      * Delivers a message from one user to others (broadcasting)
      */
     void broadcast(String message, UserThread excludeUser) {
-        
         for (UserThread aUser : userThreads) {
-        /**    if (aUser != excludeUser) {
-                aUser.sendMessage(message);S
-            }*/
-            aUser.sendMessage(message);
-            System.out.println(message);
+           if (aUser != excludeUser) {
+                aUser.sendMessage(message);
+                System.out.println(message);
+            }
         }
        
     }
@@ -78,7 +76,7 @@ public class ChatServer {
         boolean removed = userNames.remove(userName);
         if (removed) {
             userThreads.remove(aUser);
-            System.out.println("The user " + userName + " quitted");
+            System.out.println("[SERVER]: " + userName + " disconnected");
         }
     }
  

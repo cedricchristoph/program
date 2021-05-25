@@ -45,7 +45,6 @@ public class ReadThread extends Thread {
                 }
             } catch (IOException ex) {
                 System.out.println("Error reading from server: " + ex.getMessage());
-                ex.printStackTrace();
                 break;
             } catch (Exception ex) {
                 System.out.println("Ocurrió un error con la conexión");

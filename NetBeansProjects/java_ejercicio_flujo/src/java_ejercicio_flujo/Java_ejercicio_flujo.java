@@ -24,19 +24,8 @@ public class Java_ejercicio_flujo {
         BufferedReader br = null;
          
         try {
-             
-            is = System.in;
-            br = new BufferedReader(new InputStreamReader(is));
-             
-            String line = null;
-             
-            while ((line = br.readLine()) != null) {
-                if (line.equals("quit")) {
-                    break;
-                }
-                System.out.println("Line entered : " + line);
-            }
-             
+            
+            System.out.println(line);
         }
         catch (IOException ioe) {
             System.out.println("Exception while reading input " + ioe);

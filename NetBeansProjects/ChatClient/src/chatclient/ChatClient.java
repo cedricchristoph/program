@@ -12,12 +12,6 @@ import java.util.Scanner;
 import chatclient.ReadThread;
 import chatclient.WriteThread;
 
-/**
- * This is the chat client program.
- * Type 'bye' to terminte the program.
- *
- * @author www.codejava.net
- */
 public class ChatClient {
     private String hostname;
     private int port;
@@ -32,15 +26,15 @@ public class ChatClient {
         try {
             Socket socket = new Socket(hostname, port);
  
-            System.out.println("Connected to the chat server");
+            System.out.println("Connected");
  
             new ReadThread(socket, this).start();
             new WriteThread(socket, this).start();
- 
+  
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
+            System.out.println("Server not running");
         }
  
     }
@@ -56,7 +50,7 @@ public class ChatClient {
  
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Hostname: ");
+        System.out.println("IP: ");
         String hostname = scan.nextLine();
         System.out.println("Port: ");
         int port = Integer.parseInt(scan.nextLine());

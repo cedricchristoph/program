@@ -38,22 +38,22 @@ public class UserThread extends Thread {
             String userName = reader.readLine();
             server.addUserName(userName);
  
-            String serverMessage = "New user connected: " + userName;
+            String serverMessage = "[SERVER]: New user registered as " + userName;
             server.broadcast(serverMessage, this);
  
             String clientMessage;
  
             do {
                 clientMessage = reader.readLine();
-                serverMessage = "[" + userName + "]: " + clientMessage;
+                serverMessage = userName + " >>: " + clientMessage;
                 server.broadcast(serverMessage, this);
  
-            } while (!clientMessage.equals("bye"));
+            } while (!clientMessage.equals("disconnect"));
  
             server.removeUser(userName, this);
             socket.close();
  
-            serverMessage = userName + " has quitted.";
+            serverMessage = "[SERVER]: " + userName + " disconnected";
             server.broadcast(serverMessage, this);
  
         } catch (IOException ex) {
@@ -67,9 +67,7 @@ public class UserThread extends Thread {
      */
     void printUsers() {
         if (server.hasUsers()) {
-            writer.println("Connected users: " + server.getUserNames());
-        } else {
-            writer.println("No other users connected");
+            writer.println("USERS ONLINE: " + server.getUserNames());
         }
     }
  

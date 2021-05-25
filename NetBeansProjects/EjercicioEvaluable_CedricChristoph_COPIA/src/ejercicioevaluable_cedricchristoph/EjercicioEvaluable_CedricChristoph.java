@@ -2,6 +2,7 @@ package ejercicioevaluable_cedricchristoph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -15,12 +16,12 @@ public class EjercicioEvaluable_CedricChristoph {
     /**
      * Constante String para cambiar el color de texto a gris.
      */
-    static final String GREY = "\033[1m";
+    static final String grey = "\033[1m";
     
     /**
      * Constante String para cambiar el color de texto a negro.
      */
-    static final String BLACK = "\033[0m";
+    static final String black = "\033[0m";
     
     /**
      * Variable Integer la cual contendrá la posición de la primera cifra
@@ -69,14 +70,14 @@ public class EjercicioEvaluable_CedricChristoph {
     public static void mostrar(Integer[] numero, Integer[] decimals) 
     {
         try {
-            System.out.print(GREY + "...");
+            System.out.print(grey + "...");
             for (int i=charAt; i<(charAt+50); i++){
-                System.out.print(BLACK);
+                System.out.print(black);
                 if (!(i<(charAt+numero.length)))
-                    System.out.print(GREY);
+                    System.out.print(grey);
                 System.out.print(decimals[i]);
             }
-            System.out.print("..." + BLACK + "\n");
+            System.out.print("..." + black + "\n");
         } catch (IndexOutOfBoundsException e) {
             
         }
@@ -90,7 +91,7 @@ public class EjercicioEvaluable_CedricChristoph {
      * @return Integer número introducido por usuario
      * 
      */
-    public static Integer[] receiveInt(String message)
+    public static Integer[] receiveInt(String message) throws IOException 
     {
         Scanner scan = new Scanner(System.in);
         System.out.println(message);
@@ -120,7 +121,6 @@ public class EjercicioEvaluable_CedricChristoph {
             while (scan.hasNext()) {
                 PI += scan.next();
             }
-                    
             String split[] = PI.split("");
             Integer[] decimals = new Integer[split.length];
             for (int i=0; i<split.length; i++) {
@@ -130,7 +130,6 @@ public class EjercicioEvaluable_CedricChristoph {
                     
                 }
             }
-            scan.close();
             return decimals;
         } catch (FileNotFoundException ex) {
             System.out.println("Error: File not found");
@@ -144,20 +143,20 @@ public class EjercicioEvaluable_CedricChristoph {
      * Utilizamos un vector de Integer cuyos valores solo pueden ser 'null', '0' o '1'.
      * Dicho vector se llenará de '1' cuando se haya encontrado el número.
      * 
-     * Si el número se encuentra en PI se guardará la posición en PI en charAt.
-     * 
      * @param numero Vector del número introducido por el usuario
      * @param decimals Vector de decimales de PI a comprobar
      * @return Devuelve true si se ha encontrado el número
      * 
      */
-    public static boolean buscar(Integer[] numero, Integer[] decimals) 
+    public static boolean buscar(Integer[] numero, Integer[] decimals, File archivo) throws FileNotFoundException
     {
+        FileReader reader = new FileReader(archivo);
         int counter = -1;
         int i = -1;
         Integer[] pattern = new Integer[numero.length];
         try {
             do {
+                int decimal = reader.read();
                 do {
                     if (isFinished(pattern)) {
                         if (hasBeenFound(pattern)) {
@@ -174,6 +173,8 @@ public class EjercicioEvaluable_CedricChristoph {
                 counter = -1;
             } while (i < decimals.length);
         } catch (IndexOutOfBoundsException e) {
+            return false;
+        } catch (IOException e) {
             return false;
         }
         return false;

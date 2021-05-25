@@ -37,7 +37,7 @@ public class WriteThread extends Thread {
     public void run() {
  
         Scanner scan = new Scanner(System.in);
-        System.out.println("Nombre de usuario:");
+        System.out.print("Introduzca su nombre: ");
         String userName = scan.nextLine();
         client.setUserName(userName);
         writer.println(userName);
@@ -45,17 +45,17 @@ public class WriteThread extends Thread {
         String text;
  
         do {
-            System.out.println("[" + userName + "]: ");
+            System.out.print(userName + " >>: ");
             text = scan.nextLine();
             writer.println(text);
- 
+            
         } while (!text.equals("disconnect"));
  
         try {
             socket.close();
         } catch (IOException ex) {
  
-            System.out.println("Error writing to server: " + ex.getMessage());
+            System.out.println("Error sending message: " + ex.getMessage());
         }
     }
 }

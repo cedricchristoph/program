@@ -1,0 +1,761 @@
+CREATE DATABASE centroDeBuceo;
+use centroDeBuceo;
+
+/* CREAR TABLAS & FIJAR CLAVES PRIMARIAS */
+CREATE TABLE Clientes (
+	cod_Cliente INT AUTO_INCREMENT,
+	dni VARCHAR(30) NOT NULL,
+	nombre VARCHAR(30) NOT NULL,
+	apellidos VARCHAR(30) NOT NULL,
+	domicilio VARCHAR(30),
+	fechaNacimiento DATE NOT NULL,
+	telefono INT,
+	email VARCHAR(50),
+	licencia VARCHAR(30),
+	CONSTRAINT cod_Cliente_PK PRIMARY KEY (cod_Cliente)
+);
+
+CREATE TABLE Empleados (
+	cod_Empleado INT AUTO_INCREMENT,
+	dni VARCHAR(30) NOT NULL,
+	nombre VARCHAR(30) NOT NULL,
+	apellidos VARCHAR(30) NOT NULL,
+	domicilio VARCHAR(30),
+	fechaNacimiento DATE NOT NULL,
+	telefono INT,
+	CONSTRAINT cod_Empleado_PK PRIMARY KEY (cod_Empleado)
+);
+
+CREATE TABLE Profesores (
+	cod_Profe INT AUTO_INCREMENT,
+	cod_Empleado INT,
+	licencia VARCHAR(30),
+	CONSTRAINT cod_Profe_PK PRIMARY KEY (cod_Profe)
+);
+
+CREATE TABLE Secretarios (
+	cod_Secretario INT AUTO_INCREMENT,
+	cod_Empleado INT,
+	CONSTRAINT cod_Secretario_PK PRIMARY KEY (cod_Secretario)
+);
+
+CREATE TABLE Vehiculos (
+	cod_Vehiculo INT AUTO_INCREMENT,
+	marca VARCHAR(30),
+	modelo VARCHAR(50),
+	matricula VARCHAR(30),
+	ultimaInspeccion DATE,
+	proximaInspeccion DATE,
+	CONSTRAINT cod_Vehiculo_PK PRIMARY KEY (cod_Vehiculo)
+);
+
+CREATE TABLE Peticiones (
+	cod_Peticion INT AUTO_INCREMENT,
+	cod_Cliente INT,
+	cod_Actividad INT,
+	fecha DATE NOT NULL,
+	nr_Inmersiones INT DEFAULT 1,
+	nr_Personas INT DEFAULT 1,
+	CONSTRAINT cod_Peticion_PK PRIMARY KEY (cod_Peticion)
+);
+
+CREATE TABLE Reservas (
+	cod_Reserva INT AUTO_INCREMENT,
+	cod_Cliente INT,
+	cod_Excursion INT,
+	nr_Personas INT,
+	CONSTRAINT cod_Reserva_PK PRIMARY KEY (cod_Reserva)
+);
+
+CREATE TABLE Alquiler_Equipo (
+	cod_Alquiler INT AUTO_INCREMENT,
+	cod_Reserva INT,
+	cod_Equipamiento INT,
+	CONSTRAINT cod_Alquiler_PK PRIMARY KEY (cod_Alquiler)
+);
+
+CREATE TABLE Grupos_Excursiones (
+	cod_Excursion INT AUTO_INCREMENT,
+	cod_Actividad INT,
+	cod_Sitio INT,
+	cod_Empleado INT,
+	cod_Vehiculo INT,
+	fecha DATE NOT NULL,
+	hora TIME NOT NULL,
+	CONSTRAINT cod_Excursion_PK PRIMARY KEY (cod_Excursion)
+);
+
+CREATE TABLE Actividades (
+	cod_Actividad INT AUTO_INCREMENT,
+	denominacion VARCHAR(50),
+	precioPorPersona DOUBLE,
+	CONSTRAINT cod_Actividad_PK PRIMARY KEY (cod_Actividad)
+);
+
+CREATE TABLE Sitios_Buceo (
+	cod_Sitio INT AUTO_INCREMENT,
+	nombre VARCHAR(50),
+	localizacion VARCHAR(100),
+	barco BOOLEAN DEFAULT FALSE,
+	CONSTRAINT cod_Sitio_PK PRIMARY KEY (cod_Sitio)
+);
+
+CREATE TABLE Equipamiento (
+	cod_Equipamiento INT AUTO_INCREMENT,
+	cod_Proveedor INT,
+	nombre VARCHAR(50),
+	precioInmersion DOUBLE,
+	ultimaInspeccion DATE,
+	proximaInspeccion DATE,
+	alquilado BOOLEAN,
+	CONSTRAINT cod_Equipamiento_PK PRIMARY KEY (cod_Equipamiento)
+);
+
+CREATE TABLE Proveedores (
+	cod_Proveedor INT AUTO_INCREMENT,
+	nombre VARCHAR(30),
+	pais VARCHAR(30),
+	telefono INT,
+	email VARCHAR(30),
+	CONSTRAINT cod_Proveedor_PK PRIMARY KEY (cod_Proveedor)
+);
+
+CREATE TABLE Facturas (
+	cod_Factura INT AUTO_INCREMENT,
+	cod_Reserva INT,
+	precio DOUBLE,
+	pagado BOOLEAN DEFAULT false,
+	CONSTRAINT cod_Factura_PK PRIMARY KEY (cod_Factura)
+);
+
+/* EDITAR TABLAS Y AÑADIR RESTRICCIONES (CLAVES FORÁNEAS, CASCADAS, ...) */
+
+	/* PROFESORES: Añadir FK cod_Empleado */
+ALTER TABLE Profesores ADD CONSTRAINT Profesores_cod_Empleado_FK 
+FOREIGN KEY (cod_Empleado) REFERENCES Empleados (cod_Empleado)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* SECRETARIOS: Añadir FK cod_Empleado */
+ALTER TABLE Secretarios ADD CONSTRAINT Secretarios_cod_Empleado_FK
+FOREIGN KEY (cod_Empleado) REFERENCES Empleados (cod_Empleado)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* PETICIONES: Añadir FK cod_Cliente */
+ALTER TABLE Peticiones ADD CONSTRAINT Peticiones_cod_Cliente_FK
+FOREIGN KEY (cod_Cliente) REFERENCES Clientes (cod_Cliente)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* PETICIONES: Añadir FK cod_Actividad */
+ALTER TABLE Peticiones ADD CONSTRAINT  Peticiones_cod_Actividad_FK
+FOREIGN KEY (cod_Actividad) REFERENCES Actividades (cod_Actividad)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* RESERVAS: Añadir FK cod_Cliente */
+ALTER TABLE Reservas ADD CONSTRAINT Reservas_cod_Cliente_FK
+FOREIGN KEY (cod_Cliente) REFERENCES Clientes (cod_Cliente)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* RESERVAS: Añadir FK cod_Excursion */
+ALTER TABLE Reservas ADD CONSTRAINT Reservas_cod_Excursion_FK
+FOREIGN KEY (cod_Excursion) REFERENCES Grupos_Excursiones (cod_Excursion)
+ON UPDATE CASCADE;
+
+	/* ALQUILER_EQUIPO: Añadir FK cod_Reserva */
+ALTER TABLE Alquiler_Equipo ADD CONSTRAINT Alquiler_cod_Reserva_FK
+FOREIGN KEY (cod_Reserva) REFERENCES Reservas (cod_Reserva)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* ALQUILER_EQUIPO: Añadir FK cod_Equipamiento */
+ALTER TABLE Alquiler_Equipo ADD CONSTRAINT Alquiler_cod_Equipamiento
+FOREIGN KEY (cod_Equipamiento) REFERENCES Equipamiento (cod_Equipamiento)
+ON UPDATE CASCADE;
+
+	/* GRUPOS_EXCURSIONES: Añadir FK cod_Actividad */
+ALTER TABLE Grupos_Excursiones ADD CONSTRAINT Excursiones_cod_Actividad_FK
+FOREIGN KEY (cod_Actividad) REFERENCES Actividades (cod_Actividad)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* GRUPOS_EXCURSIONES: Añadir FK cod_Sitio */
+ALTER TABLE Grupos_Excursiones ADD CONSTRAINT Excursiones_cod_Sitio_FK
+FOREIGN KEY (cod_Sitio) REFERENCES Sitios_Buceo (cod_Sitio)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+	/* GRUPOS_EXCURSIONES: Añadir FK cod_Empleado */
+ALTER TABLE Grupos_Excursiones ADD CONSTRAINT Excursiones_cod_Empleado_FK
+FOREIGN KEY (cod_Empleado) REFERENCES Empleados (cod_Empleado)
+ON UPDATE CASCADE;
+
+	/* GRUPOS_EXCURSIONES: Añadir FK cod_Vehiculo */
+ALTER TABLE Grupos_Excursiones ADD CONSTRAINT Excursiones_cod_Vehiculo_FK
+FOREIGN KEY (cod_Vehiculo) REFERENCES Vehiculos (cod_Vehiculo)
+ON UPDATE CASCADE;
+
+	/* EQUIPAMIENTO: Añadir FK cod_Proveedor */
+ALTER TABLE Equipamiento ADD CONSTRAINT Equipamiento_cod_Proveedor_FK
+FOREIGN KEY (cod_Proveedor) REFERENCES Proveedores (cod_Proveedor)
+ON UPDATE CASCADE;
+
+	/* FACTURAS: Añadir FK cod_Reserva */
+ALTER TABLE Facturas ADD CONSTRAINT Facturas_cod_Reserva_FK
+FOREIGN KEY (cod_Reserva) REFERENCES Reservas (cod_Reserva)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+/* AÑADIR DATOS A LA BASE DE DATOS */
+
+	/* Clientes (100) */
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (1, '262868403-9', 'Rodolph', 'Archbold', '19968 Katie Pass', '1987-06-01', '138 711 3458', 'rarchbold0@gov.uk', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (2, '396041688-1', 'Umeko', 'Giorgioni', '12 Trailsway Street', '1998-09-11', '361 845 1871', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (3, '612009602-7', 'Kristel', 'Domeney', '934 Dottie Lane', '1989-06-22', '667 230 8578', 'kdomeney2@comcast.net', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (4, '865751922-4', 'Jacques', 'Bumby', '2718 Darwin Center', '1979-09-20', '305 145 7336', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (5, '426117951-2', 'Conchita', 'McGuiness', '24 Upham Place', '1963-04-05', '276 345 9218', 'cmcguiness4@hud.gov', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (6, '467216027-0', 'Kessia', 'Killough', '22 Red Cloud Point', '1989-01-08', null, 'kkillough5@netvibes.com', 'Deep Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (7, '450586120-1', 'Bryon', 'Matitiaho', '22 Westend Drive', '2010-12-03', '606 234 3709', 'bmatitiaho6@friendfeed.com', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (8, '002276918-8', 'Caril', 'Madsen', '35491 Sundown Point', '2010-01-01', null, null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (9, '585977352-8', 'Trixie', 'Febvre', null, '1974-06-06', '241 856 4570', 'tfebvre8@indiatimes.com', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (10, '559991612-X', 'Lindon', 'Buckbee', '4151 Katie Park', '1995-04-01', '473 722 5776', 'lbuckbee9@ted.com', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (11, '154860092-X', 'Lewes', 'Blanning', '00883 Mitchell Alley', '1956-11-23', '720 262 1586', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (12, '278822066-9', 'Stephannie', 'Blaw', '77857 Dennis Center', '1984-05-24', '894 448 3430', 'sblawb@umich.edu', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (13, '512332081-4', 'Marylinda', 'Llewelly', '9 Corben Drive', '1974-03-20', '701 652 4061', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (14, '949038249-3', 'Cesare', 'Carah', null, '1981-02-03', null, 'ccarahd@seattletimes.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (15, '842167659-8', 'Chery', 'Eldred', '5354 Muir Lane', '1984-08-17', '679 263 2144', 'celdrede@cnet.com', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (16, '380722203-0', 'Philip', 'Hacaud', '09408 Texas Alley', '1992-04-16', null, 'phacaudf@ovh.net', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (17, '901746766-5', 'Murray', 'Stopps', '210 2nd Crossing', '1981-11-17', '147 640 7438', 'mstoppsg@hugedomains.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (18, '910498863-9', 'Guntar', 'Weedall', '0889 Independence Hill', '1959-01-08', '354 297 5209', 'gweedallh@vinaora.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (19, '899516703-3', 'Cacilie', 'Rego', '33283 Tennessee Crossing', '2004-04-07', '665 178 2906', 'cregoi@google.de', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (20, '285033928-8', 'Cherilynn', 'Pile', '1 Northland Court', '1971-12-15', '897 387 0250', 'cpilej@netvibes.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (21, '439325530-5', 'Arron', 'De Lisle', null, '1997-07-09', '886 829 4565', 'adelislek@moonfruit.com', 'Deep Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (22, '934726623-X', 'Boigie', 'Byron', '4309 Thierer Hill', '1999-08-08', '790 880 4758', 'bbyronl@nba.com', 'Night Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (23, '217910611-4', 'Wini', 'Blockey', '1 Truax Pass', '1982-11-04', '146 715 7569', 'wblockeym@cornell.edu', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (24, '461249013-4', 'Dennie', 'Genney', '13567 Judy Place', '2007-12-13', '614 729 1329', 'dgenneyn@chronoengine.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (25, '966941766-X', 'Delores', 'Aslin', '18 Bunting Park', '1976-04-21', '312 775 8038', 'daslino@cbsnews.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (26, '596745751-8', 'Zane', 'Breckenridge', null, '1957-12-29', '869 705 5395', 'zbreckenridgep@last.fm', 'Night Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (27, '657863558-0', 'Dorena', 'Upham', '22 Washington Lane', '1988-06-30', '311 819 4789', 'duphamq@so-net.ne.jp', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (28, '062663308-7', 'Frankie', 'Figg', '473 Debra Point', '1977-03-04', '457 501 8469', 'ffiggr@bloglines.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (29, '307510743-3', 'Gallard', 'Giorgetti', '6 Wayridge Crossing', '2005-03-18', '461 562 3281', 'ggiorgettis@de.vu', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (30, '820626783-2', 'Loraine', 'Woodus', null, '1996-09-23', null, 'lwoodust@ucsd.edu', 'Advanced Open Water Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (31, '094926840-2', 'Abramo', 'Sporton', '8 Graedel Road', '1978-11-22', '339 656 5297', 'asportonu@pagesperso-orange.fr', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (32, '440931180-8', 'Yancey', 'Chisholm', null, '2010-05-26', '369 407 2203', 'ychisholmv@google.cn', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (33, '710927176-5', 'Anstice', 'Leffek', '58722 Vidon Parkway', '2000-06-20', '900 147 8220', 'aleffekw@wp.com', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (34, '079580029-0', 'Harli', 'Foffano', '3 Porter Terrace', '2010-03-14', '746 289 4944', 'hfoffanox@cocolog-nifty.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (35, '243324502-8', 'Lula', 'Killner', '925 Bayside Street', '2004-06-15', '179 667 8648', 'lkillnery@reverbnation.com', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (36, '757762970-7', 'Berton', 'Wigfield', '94 Prairieview Avenue', '1982-09-04', null, null, 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (37, '869930404-8', 'Felecia', 'Goulstone', null, '1986-04-18', '512 282 5461', 'fgoulstone10@marriott.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (38, '160620203-0', 'Olive', 'Mousdall', '79106 Goodland Point', '2008-08-27', '159 757 2599', 'omousdall11@phpbb.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (39, '738492459-6', 'Bowie', 'Gogin', '4 Westport Lane', '1993-03-31', null, 'bgogin12@4shared.com', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (40, '630102696-9', 'Ernest', 'Hames', '84 High Crossing Way', '1962-11-30', '824 324 6231', 'ehames13@ocn.ne.jp', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (41, '271486898-3', 'Eveleen', 'Shepherdson', '63414 Florence Circle', '1965-06-16', '514 354 2144', 'eshepherdson14@livejournal.com', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (42, '703909749-4', 'Rae', 'Duerden', '2445 Jay Road', '1991-08-12', null, null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (43, '772607058-7', 'Shayne', 'Colbrun', null, '1978-01-25', null, 'scolbrun16@theguardian.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (44, '391030161-4', 'Paulina', 'Parsand', '66631 Moulton Circle', '1996-11-19', '159 909 4985', 'pparsand17@dyndns.org', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (45, '700085974-1', 'Letisha', 'Flattman', '1 Tennyson Drive', '1960-09-16', null, 'lflattman18@oaic.gov.au', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (46, '092058572-8', 'Warden', 'Spavon', '91474 Manufacturers Pass', '1982-12-12', '138 607 6584', 'wspavon19@blogtalkradio.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (47, '475467500-2', 'Henry', 'Abramsky', '0078 Buhler Pass', '1957-10-04', '501 437 5947', 'habramsky1a@tumblr.com', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (48, '470946512-6', 'Henrie', 'Legging', '0 Ohio Plaza', '2008-08-06', '431 327 7438', 'hlegging1b@si.edu', 'Advanced Open Water Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (49, '515854244-9', 'Lucy', 'Blazewski', '316 Lake View Trail', '1989-11-11', null, 'lblazewski1c@fc2.com', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (50, '283672454-4', 'Yasmin', 'Britian', null, '1983-12-27', '520 913 7035', 'ybritian1d@vimeo.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (51, '780161016-4', 'Barri', 'MacCard', '6568 Carberry Street', '2001-11-03', '637 715 8198', 'bmaccard1e@51.la', 'Deep Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (52, '104898376-5', 'Fredrick', 'Gunnell', '479 Artisan Hill', '1999-01-04', '950 449 4920', 'fgunnell1f@mediafire.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (53, '435809669-7', 'Duky', 'Lobb', '1 Namekagon Point', '2004-05-28', '513 997 2023', 'dlobb1g@seattletimes.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (54, '686092006-8', 'Carleen', 'Doud', '58228 Hermina Center', '1992-08-30', '349 270 8596', 'cdoud1h@irs.gov', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (55, '398468877-6', 'Constancia', 'Dutson', '20675 Scott Crossing', '1978-03-25', null, 'cdutson1i@nsw.gov.au', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (56, '253773392-4', 'Rockie', 'Stannah', '273 Petterle Hill', '2000-06-04', '542 929 8498', 'rstannah1j@yahoo.co.jp', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (57, '122264271-9', 'Wynn', 'Klos', '652 1st Hill', '1956-12-15', null, 'wklos1k@purevolume.com', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (58, '246014006-1', 'Teddi', 'Harmond', '63706 8th Lane', '1976-01-04', '669 789 1719', null, 'Night Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (59, '169019034-5', 'Kassi', 'Toft', '28 Kensington Park', '1985-12-04', '873 297 2536', 'ktoft1m@yahoo.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (60, '376349359-X', 'Balduin', 'Pallister', '73246 Merrick Drive', '1997-03-08', '487 172 6984', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (61, '391831606-8', 'Christal', 'Crosbie', '5513 Pine View Road', '1961-06-02', '399 906 1245', 'ccrosbie1o@qq.com', 'Advanced Open Water Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (62, '275037859-1', 'Trudey', 'Cescoti', '712 Fremont Place', '1996-01-14', '845 242 0616', 'tcescoti1p@accuweather.com', 'Night Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (63, '375083502-0', 'Mallory', 'Tithecott', '17 Charing Cross Trail', '1986-01-18', '712 265 0076', 'mtithecott1q@drupal.org', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (64, '210053948-5', 'Donnamarie', 'Inman', '30 Mendota Hill', '1987-03-25', null, 'dinman1r@blogger.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (65, '287192767-7', 'Joceline', 'Acarson', '739 Debs Center', '1987-12-31', '111 225 2044', 'jacarson1s@scribd.com', 'Divemaster');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (66, '754305810-3', 'Queenie', 'La Batie', null, '1997-03-27', '418 364 8600', 'qlabatie1t@netlog.com', 'Open Water Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (67, '703444815-9', 'Frants', 'Pannett', '19791 Truax Crossing', '2000-10-31', '725 421 8014', 'fpannett1u@wordpress.org', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (68, '602289905-2', 'Hill', 'Hammonds', '94997 Fordem Parkway', '1990-05-27', '154 874 7005', 'hhammonds1v@topsy.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (69, '872790599-3', 'Leland', 'Brewers', null, '1988-07-20', '696 307 1392', 'lbrewers1w@slate.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (70, '206997494-4', 'Worthy', 'Grishinov', '72927 Anniversary Drive', '2010-06-14', '437 325 1868', 'wgrishinov1x@ox.ac.uk', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (71, '217375830-6', 'Elliott', 'Cockburn', '84197 Kenwood Street', '1994-04-23', '697 730 7384', 'ecockburn1y@si.edu', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (72, '282792049-2', 'Lela', 'Codman', '90686 Elgar Terrace', '1963-10-07', '490 334 4681', 'lcodman1z@cloudflare.com', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (73, '822932517-0', 'Suzie', 'Matiewe', null, '1960-01-01', '128 236 3665', 'smatiewe20@boston.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (74, '178729247-9', 'Mallorie', 'Krzysztofiak', '4 Ilene Lane', '1991-11-11', '563 248 8966', 'mkrzysztofiak21@toplist.cz', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (75, '330801759-8', 'Deny', 'Gerardot', '74888 Anniversary Way', '2009-08-19', '115 668 774', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (76, '551156159-2', 'Drusy', 'Petrasch', '5 Kropf Trail', '1977-08-23', '928 160 9710', 'dpetrasch23@yale.edu', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (77, '341612141-4', 'Tilda', 'Keefe', '620 Novick Place', '1996-11-18', '280 924 6828', 'tkeefe24@soundcloud.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (78, '760345538-3', 'Tomi', 'Varden', '64179 Hoard Alley', '2004-10-27', '829 962 6229', 'tvarden25@nhs.uk', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (79, '419805287-5', 'Dot', 'Shurrocks', '31 Sloan Plaza', '2004-04-21', '816 876 3702', 'dshurrocks26@twitter.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (80, '219585700-5', 'Vin', 'Wolledge', '19499 Huxley Place', '1996-06-11', null, 'vwolledge27@mysql.com', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (81, '273454904-2', 'Nanine', 'Fipp', '7 Banding Hill', '1993-02-22', '471 835 4815', 'nfipp28@discuz.net', 'Open Water Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (82, '696584941-X', 'Madlen', 'Hanny', '9957 Onsgard Lane', '1996-01-02', '512 591 2883', 'mhanny29@upenn.edu', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (83, '667503323-9', 'Tandi', 'Cursey', '4 Hermina Circle', '1966-09-24', '847 830 2155', 'tcursey2a@t-online.de', 'Night Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (84, '690736500-6', 'Reed', 'Painswick', '10 Loeprich Court', '1994-09-12', '499 659 5983', 'rpainswick2b@house.gov', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (85, '970050962-1', 'Bettina', 'Coales', '6 Pawling Court', '2008-08-06', '238 310 5256', null, 'Deep Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (86, '620878080-2', 'Rebekkah', 'Gynne', '2 Emmet Circle', '2006-12-08', '714 559 9945', 'rgynne2d@cafepress.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (87, '514807579-1', 'Deeanne', 'Duncan', '87 Tennessee Trail', '2001-06-11', '382 918 8149', 'dduncan2e@networkadvertising.org', 'Rescue Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (88, '561989990-X', 'Sigvard', 'Seed', '2764 Rieder Drive', '1975-02-04', '584 701 2149', 'sseed2f@yolasite.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (89, '020881263-6', 'Salli', 'Burdas', '74 Green Park', '1973-10-11', '828 528 7710', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (90, '371020495-X', 'Rosa', 'Casement', '6912 Donald Parkway', '2001-05-24', '831 343 4740', 'rcasement2h@goodreads.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (91, '528132992-8', 'Roderick', 'Queripel', '90314 Continental Hill', '1972-06-14', '794 808 0180', 'rqueripel2i@cnbc.com', 'Nitrox');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (92, '873087078-X', 'Carma', 'Perdue', '55726 Londonderry Alley', '2006-12-20', '303 681 0629', 'cperdue2j@example.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (93, '870076622-4', 'Leonanie', 'Brabender', '535 Summerview Circle', '1960-04-05', '743 263 1696', 'lbrabender2k@biglobe.ne.jp', 'Wreck Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (94, '697242305-8', 'Bogey', 'Glenny', '04 Southridge Alley', '2001-03-23', '448 438 0786', 'bglenny2l@ebay.co.uk', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (95, '497583454-5', 'Artus', 'Van Arsdale', '492 Fieldstone Trail', '1975-05-23', '742 887 0504', 'avanarsdale2m@google.com.br', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (96, '215195136-7', 'Hewie', 'Caughan', '7 Forest Avenue', '1962-06-29', null, 'hcaughan2n@amazon.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (97, '638068706-8', 'Gun', 'Bashford', '621 Mitchell Terrace', '1993-11-23', '448 722 5541', null, null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (98, '375186660-4', 'Adriano', 'Kee', '6 Anthes Hill', '1988-08-02', '971 155 7757', 'akee2p@yelp.com', null);
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (99, '398988739-4', 'Kira', 'Linley', '8 Elgar Drive', '2005-03-11', '597 422 5966', 'klinley2q@bizjournals.com', 'Scuba Diver');
+insert into clientes (cod_Cliente, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono, email, licencia) values (100, '324843965-3', 'Lynette', 'Whitmore', '3 Walton Park', '1974-01-20', '110 671 1614', 'lwhitmore2r@w3.org', null);
+	
+	/* Empleados */
+insert into Empleados (cod_Empleado, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono) values (1, 'Y7763891-U', 'Carlos', 'Rodriguez', 'Calle El Adelantado, 8', '1980-05-23', 33873456);
+insert into Empleados (cod_Empleado, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono) values (2, '88231451-C', 'Hugo', 'Lopez', 'Calle Puerto, 7', '1996-01-13', 66844531);
+insert into Empleados (cod_Empleado, dni, nombre, apellidos, domicilio, fechaNacimiento, telefono) values (3, '22453664-K', 'Alejandra', 'Gonzalez', 'Calle El Paraiso, 2', '1985-08-03', 11329664);
+
+		/* Profesores */
+insert into Profesores (cod_Empleado, licencia) values (1, 'Divemaster');
+insert into Profesores (cod_Empleado, licencia) values (2, 'Divemaster');
+		/* Secretarios/as */
+insert into Secretarios (cod_Empleado) values (3);
+	
+	/* Vehiculos */
+insert into Vehiculos (marca, modelo, matricula, ultimaInspeccion, proximaInspeccion) values ('Nissan', 'NV300', '4465-VHC', '2019/04/12', '2022/04/12');		
+insert into Vehiculos (marca, modelo, matricula, ultimaInspeccion, proximaInspeccion) values ('Nissan', 'NV300', '1537-KLK', '2020/07/03', '2023/07/03');		
+
+	/* Actividades */
+insert into Actividades (denominacion, precioPorPersona) values ('Adventure Diving', 89.99); 
+insert into Actividades (denominacion, precioPorPersona) values ('Wreck Diving', 109.99);
+insert into Actividades (denominacion, precioPorPersona) values ('OWD Course', 349.99);
+insert into Actividades (denominacion, precioPorPersona) values ('AOWD Course', 379.99);
+insert into Actividades (denominacion, precioPorPersona) values ('Nitrox Diving', 119.99);
+insert into Actividades (denominacion, precioPorPersona) values ('Adventure Diving NIGHT', 129.99);
+insert into Actividades (denominacion, precioPorPersona) values ('Wreck Diving NIGHT', 149.99);
+insert into Actividades (denominacion, precioPorPersona) values ('Nitrox Diving NIGHT', 179.99);
+
+	/* Sitios de buceo (8)*/
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Mountain of the fishes', '28.41010488624484, -16.57958580904372', true);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Puerto de la Cruz', '28.419528609372676, -16.550297466327866', false);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Radazul', '28.4013907949378, -16.323718083253528', false);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Ship Wreck Alpha', '28.427601571188045, -16.513756223394182', true);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Ship Wreck Titanic', '28.428630475987656, -16.531540037688373', true);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Plane Wreck Condor', '28.43632636738222, -16.506127902778232', true);
+insert into Sitios_Buceo (nombre, localizacion, barco) values ('Guimar Point', '28.29134399804484, -16.377012485092116', false);
+insert into Sitios_Buceo (nombre, barco) values ('Maritim Pool', false);
+
+	/* Grupos de excursiones (15)*/
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 1, 1, 1, '2021-05-11', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 3, 1, 1, '2021-05-12', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 2, 2, 2, '2021-05-12', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 1, 1, 1, '2021-05-13', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 2, 2, 2, '2021-05-13', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 7, 2, 1, '2021-05-14', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (3, 8, 1, 2, '2021-05-14', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (3, 8, 2, 2, '2021-05-15', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (2, 6, 1, 1, '2021-05-15', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (4, 2, 2, 1, '2021-05-16', '10:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 2, 2, 2, '2021-05-17', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (6, 2, 2, 1, '2021-06-18', '19:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (2, 4, 1, 1, '2021-06-19', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (5, 7, 2, 2, '2021-06-19', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 5, 2, 2, '2021-06-20', '10:00');
+
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 2, 2, 2, '2021-04-17', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (6, 2, 2, 1, '2021-04-18', '19:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (2, 4, 1, 1, '2021-04-19', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (5, 7, 2, 2, '2021-04-19', '9:00');
+insert into Grupos_Excursiones (cod_Actividad, cod_Sitio, cod_Empleado, cod_Vehiculo, fecha, hora) values (1, 5, 2, 2, '2021-04-20', '10:00');
+
+	/* Reservas */
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (84, 7, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (1, 4, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (99, 6, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (89, 9, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (98, 5, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (26, 13, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (32, 6, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (14, 10, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (41, 12, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (65, 7, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (42, 14, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (99, 14, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (35, 11, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (100, 8, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (11, 9, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (20, 13, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (44, 2, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (55, 3, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (3, 10, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (12, 14, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (22, 12, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (93, 11, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (45, 8, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (85, 8, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (69, 1, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (65, 5, 1);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (80, 1, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (74, 15, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (95, 7, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (5, 9, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (93, 11, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (99, 9, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (3, 5, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (66, 15, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (19, 14, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (65, 8, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (43, 12, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (77, 8, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (87, 8, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (80, 6, 3);
+
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (2, 16, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (3, 16, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (4, 16, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (40, 17, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (40, 17, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (23, 18, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (78, 18, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (70, 18, 3);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (32, 19, 2);
+insert into Reservas (cod_Cliente, cod_Excursion, nr_Personas) values (3, 20, 3);
+
+	/* Proveedores */
+insert into Proveedores (nombre, pais, telefono, email) values ('PADI', 'USA', '88553431', 'contact@padi.com');
+insert into Proveedores (nombre, pais, telefono, email) values ('Cressi', 'Italy', '114223456', 'contact@cressi.com');
+insert into Proveedores (nombre, pais, telefono, email) values ('Beuchat', 'Italy', '436654875', 'contact@beuchat.com');
+insert into Proveedores (nombre, pais, telefono, email) values ('SEAC', 'England', '8895466214', 'contact@seac.com');
+
+	/* Equipamiento */
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB1', 3.99, '2022-02-04', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB2', 3.99, '2022-01-04', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB3', 3.99, '2022-01-04', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB4', 3.99, '2022-01-04', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB5', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB6', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB7', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB8', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB9', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 8L - PB10', 3.99, '2022-02-07', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB1', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB2', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB3', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB4', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB5', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB6', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (2, 'Botella 12L - CB7', 4.49, '2022-07-01', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 15L - PB11', 4.99, '2022-09-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 15L - PB12', 4.99, '2022-09-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 15L - PB13', 4.99, '2022-09-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (1, 'Botella 15L - PB14', 4.99, '2022-09-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (4, 'Botella NITROX 12L - SN1', 7.99, '2022-10-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (4, 'Botella NITROX 12L - SN2', 7.99, '2022-10-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (4, 'Botella NITROX 12L - SN3', 7.99, '2022-10-19', false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, proximaInspeccion, alquilado) values (4, 'Botella NITROX 12L - SN4', 7.99, '2022-10-19', false);
+
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XS Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XS Blanca', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XS Blanca', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Máscara XS Roja', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara S Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Máscara S Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara S Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara S Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Máscara S Roja', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Máscara M Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Blanca', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara M Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Máscara L Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Máscara L Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Máscara L Naranja', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara L Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Máscara L Roja', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Máscara L Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara L Negra', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XL Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Máscara XL Roja', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Máscara XL Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XL Blanca', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XL Azul', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XL Nera', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Máscara XL Azul', 1.99, false);
+
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 34-35 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 34-35 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 34-35 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 34-35 Blancas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 34-35 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 34-35 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Aletas 34-35 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Aletas 36-37 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 36-37 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 36-37 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 36-37 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 36-37 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 36-37 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 36-37 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 38-40 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 38-40 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 38-40 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 38-40 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 38-40 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Aletas 38-40 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 40-42 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 40-42 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 40-42 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 40-42 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 40-42 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 42-44 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 42-44 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Aletas 42-44 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 42-44 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 44-46 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 44-46 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Aletas 44-46 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 44-46 Amarillas', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Aletas 46-48 Negras', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Aletas 46-48 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 46-48 Azules', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Aletas 46-48 Amarillas', 1.99, false);
+
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Regulador', 1.99, false);
+
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Jacket XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Jacket XL', 1.99, false);
+
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XS', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XS', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XS', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Neopreno XS', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Neopreno S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Neopreno XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Neopreno XL', 1.99, false);
+
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots S', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots M', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (2, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots L', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (3, 'Boots XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (1, 'Boots XL', 1.99, false);
+insert into Equipamiento (cod_Proveedor, nombre, precioInmersion, alquilado) values (4, 'Boots XL', 1.99, false);
+
+	/* Alquiler_Equipo */
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (11, 11);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (22, 206);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (33, 164);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (11, (77));
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (11, 94);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (22, 125);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (33, 12);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (36, 207);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (36, 165);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (47, 70);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (47, 95);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (47, 126);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (20, 13);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (20, 208);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (29, 166);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (29, 96);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (29, 91);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (29, 127);
+
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (14, 15);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (15, 202);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (14, 100);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (15, 57);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (22, 25);
+insert into Alquiler_Equipo (cod_Reserva, cod_Equipamiento) values (11, 130);
+
+UPDATE Equipamiento SET alquilado=true WHERE cod_Equipamiento IN (SELECT cod_Equipamiento FROM Alquiler_Equipo);
+UPDATE Equipamiento SET alquilado=false WHERE NOT cod_Equipamiento IN (SELECT cod_Equipamiento FROM Alquiler_Equipo);
+
+	/* Peticiones */
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (63, 1, '2021-07-16', 1, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (96, 2, '2021-05-08', 2, 1);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (76, 6, '2021-05-13', 1, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (50, 4, '2021-07-13', 1, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (9, 5, '2021-06-14', 1, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (21, 7, '2021-06-10', 2, 3);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (46, 4, '2021-07-15', 2, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (58, 3, '2021-07-05', 2, 3);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (18, 4, '2021-06-24', 1, 2);
+insert into Peticiones (cod_Cliente, cod_Actividad, fecha, nr_Inmersiones, nr_Personas) values (74, 4, '2021-05-13', 1, 3);
+
+/* Un curso de buceo no necesita la introduccion de cantidad de inmersionas ya que eso lo decide el centro y no el cliente */
+UPDATE peticiones SET nr_Inmersiones=NULL WHERE cod_Actividad IN (4, 3);
+	
+	
+	/* Facturas */
+insert into facturas (cod_Reserva, precio, pagado) values (11, 250.44, true);
+insert into facturas (cod_Reserva, precio, pagado) values (22, 101.96, true);
+insert into facturas (cod_Reserva, precio, pagado) values (33, 276.45, true);
+insert into facturas (cod_Reserva, precio, pagado) values (14, 706.46, true);
+insert into facturas (cod_Reserva, precio, pagado) values (15, 333.95, false);
+insert into facturas (cod_Reserva, precio, pagado) values (36, 1053.95, false);
+insert into facturas (cod_Reserva, precio, pagado) values (47, 335.94, false);
+insert into facturas (cod_Reserva, precio, pagado) values (48, 329.97, true);
+insert into facturas (cod_Reserva, precio, pagado) values (29, 707.94, false);
+insert into facturas (cod_Reserva, precio, pagado) values (20, 246.46, false);
+
+	/* VER FACTURAS CON PRECIOS TOTALES 
+
+SELECT CONCAT(clientes.nombre, " ", clientes.apellidos) as "Cliente", 
+reservas.nr_Personas as "Personas", actividades.denominacion as "Actividad", 
+(SELECT Sum(equipamiento.precioInmersion) FROM Alquiler_Equipo INNER JOIN equipamiento ON (equipamiento.cod_Equipamiento=Alquiler_Equipo.cod_Equipamiento) 
+WHERE alquiler_equipo.cod_Reserva=facturas.cod_Reserva) as "Precio alquileres total", 
+cast((actividades.precioPorPersona*reservas.nr_Personas) as decimal(10, 2)) as "Precio excursion total", 
+cast(((cast((actividades.precioPorPersona*reservas.nr_Personas) as decimal(10, 2)))+ IFNULL((SELECT Sum(equipamiento.precioInmersion) FROM Alquiler_Equipo INNER JOIN equipamiento ON (equipamiento.cod_Equipamiento=Alquiler_Equipo.cod_Equipamiento) 
+WHERE alquiler_equipo.cod_Reserva=facturas.cod_Reserva), 0)) as decimal(10, 2)) as "TOTAL A PAGAR", 
+facturas.pagado FROM facturas 
+INNER JOIN reservas ON 
+(facturas.cod_Reserva=reservas.cod_Reserva)
+INNER JOIN grupos_excursiones ON
+(grupos_excursiones.cod_Excursion=reservas.cod_Excursion) 
+INNER JOIN actividades ON 
+(grupos_excursiones.cod_Actividad=actividades.cod_Actividad) 
+INNER JOIN clientes ON 
+(reservas.cod_Cliente=clientes.cod_Cliente);
+
+	*/
+
+
+/* Ver equipamiento alquilado
+SELECT b.cod_Equipamiento as "ID", b.nombre as "Equipamiento", b.alquilado as "Alquilado" 
+FROM Alquiler_Equipo as a LEFT JOIN Equipamiento as b ON (a.cod_Equipamiento=b.cod_Equipamiento);
+
+	Ver peticiones con informacion escrita
+SELECT CONCAT(clientes.nombre, " ", clientes.apellidos) as "Cliente", actividades.denominacion as "Actividad solicitada", 
+peticiones.fecha as "Fecha solicitada", peticiones.nr_Inmersiones as "Inmersiones solicitadas", peticiones.nr_Personas as "Personas en total" 
+FROM peticiones INNER JOIN clientes ON (peticiones.cod_Cliente=clientes.cod_Cliente) 
+INNER JOIN actividades ON (peticiones.cod_Actividad=actividades.cod_Actividad);
+
+	Ver tabla de excursiones con datos escritos
+ SELECT g.fecha as Fecha, a.denominacion as "Actividad", s.nombre as "Sitio", e.nombre as "Profesor", concat(v.marca, " ", v.modelo, " ", v.matricula) as "Vehiculo" 
+ FROM grupos_excursiones as g INNER JOIN actividades as a ON (g.cod_Actividad=a.cod_Actividad) INNER JOIN Sitios_Buceo as s ON (g.cod_Sitio=s.cod_Sitio) 
+ INNER JOIN Empleados as e ON (g.cod_Empleado=e.cod_Empleado) INNER JOIN Vehiculos as v ON (g.cod_Vehiculo=v.cod_Vehiculo);
+
+	Ver lista de equipamiento alquilado por un determinado cliente/reservas
+SELECT e.nombre as "Equipamiento" FROM alquiler_equipo as a INNER JOIN reservas as r ON (r.cod_Reserva=a.cod_Reserva) INNER JOIN Equipamiento as e 
+ON (a.cod_Equipamiento=e.cod_Equipamiento) WHERE a.cod_Reserva=20;
+ 
+*/
+
+
+
