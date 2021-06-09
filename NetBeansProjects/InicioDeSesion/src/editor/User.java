@@ -13,8 +13,8 @@ package editor;
 public class User {
     
     // VARIABLES & CONSTANTS
-    private final int ADMIN = 1;
-    private final int STANDARD = 0;
+    public static final int ADMIN = 1;
+    public static final int STANDARD = 0;
     
     protected String username;
     protected String nombre;

@@ -20,7 +20,6 @@ import javax.swing.JOptionPane;
  * @author Inf2
  */
 public class login extends javax.swing.JFrame {
-
     
     public login() {
         initComponents();
@@ -191,8 +190,15 @@ public class login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
-        login(tf_Username.getText(),
-              pf_Pwd.getPassword());
+        if (login(tf_Username.getText(), pf_Pwd.getPassword())) {
+            System.out.println("Logged in succesfully");
+            try{
+                Editor edit = new Editor();
+                edit.setVisible(true);
+            } catch (Exception e) {
+                System.out.println(e.getCause());
+            }
+        }
     }//GEN-LAST:event_signInBtnActionPerformed
 
     /**
@@ -243,26 +249,21 @@ public class login extends javax.swing.JFrame {
                 usuarios.add(newUser);
             }
         } catch (Exception ex) {
-            
+            System.out.println("Error loading");
         }
         return usuarios;
     }
     
-    public void login (String username, char[] pwd) {
+    private boolean login (String username, char[] pwd) {
         boolean success = false;
         for (User user : userList) {
             if (user.getUsername().equals(username) && checkPwd(user, pwd)) {
-                success = true;
-                this.dispose();
-                break;
+                return true;
             } else {
-                success = false;
+                return false;
             }
         }
-        
-        if (!success) {
-            JOptionPane.showMessageDialog(this, "Username or password is incorrect", "Authentication error", JOptionPane.ERROR_MESSAGE);
-        }
+        return false;
     }
     
     public boolean checkPwd(User user, char[] uPwd) {

@@ -17,7 +17,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Juego partida = new Juego(Juego.PRINCIPIANTE);
+        Juego partida = new Juego(Juego.EXPERTO);
         partida.init();
         do {
             int x;
