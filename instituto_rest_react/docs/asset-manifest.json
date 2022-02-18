@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bc69b196.css",
+    "main.js": "/static/js/main.9a91c401.js",
+    "static/media/caveman.gif": "/static/media/caveman.f3d64f80e43058e35c06.gif",
+    "index.html": "/index.html",
+    "main.bc69b196.css.map": "/static/css/main.bc69b196.css.map",
+    "main.9a91c401.js.map": "/static/js/main.9a91c401.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bc69b196.css",
+    "static/js/main.9a91c401.js"
+  ]
+}
